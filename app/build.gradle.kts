@@ -45,9 +45,9 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
     kapt("androidx.hilt:hilt-compiler:1.3.0")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.51.1")
+        // annotationProcessor("com.google.dagger:hilt-compiler:2.51.1")
     //Room
     implementation("androidx.room:room-runtime:2.8.3")
     kapt("androidx.room:room-compiler:2.8.3")
@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.work:work-runtime:2.11.0")
     //Hilt with WorkerManager
     implementation("androidx.hilt:hilt-work:1.3.0")
+    implementation("androidx.work:work-runtime:2.11.0")
     //ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
 
