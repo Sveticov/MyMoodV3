@@ -1,5 +1,6 @@
 package com.svetikov.mymood
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,14 +8,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.svetikov.mymood.ui.pages.ActionLogScreen
 import com.svetikov.mymood.ui.theme.MyMoodTheme
-import dagger.hilt.android.HiltAndroidApp
+import com.svetikov.mymood.worker.NotificationWorker
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,28 +26,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyMoodTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+               ActionLogScreen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
     }
-}
+    private fun schedulePeriodicNotification(context: Context){
+        val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
+            2,
+            TimeUnit.HOURS
+        ).build()
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyMoodTheme {
-        Greeting("Android")
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "TwoHourNotification",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
     }
 }
