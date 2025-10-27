@@ -2,6 +2,7 @@ package com.svetikov.mymood
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.svetikov.mymood.ui.pages.ActionLogScreen
@@ -22,6 +24,11 @@ import java.util.concurrent.TimeUnit
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+            //schedule
+        schedulePeriodicNotification(this)
+        scheduleOne(this)
+
+
         enableEdgeToEdge()
         setContent {
             MyMoodTheme {
@@ -33,8 +40,8 @@ class MainActivity : ComponentActivity() {
     }
     private fun schedulePeriodicNotification(context: Context){
         val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            2,
-            TimeUnit.HOURS
+            15,
+            TimeUnit.MINUTES
         ).build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -42,5 +49,12 @@ class MainActivity : ComponentActivity() {
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )
+        Log.d("workRequest","workRequest ${workRequest.id}")
+    }
+    private fun  scheduleOne(context: Context){
+        val oneTime = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .build()
+        WorkManager.getInstance(context)
+            .enqueue(oneTime)
     }
 }

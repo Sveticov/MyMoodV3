@@ -1,5 +1,6 @@
 package com.svetikov.mymood.notification
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -9,11 +10,15 @@ import com.svetikov.mymood.data.model.ActionLog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@SuppressLint("RestrictedApi")
 @AndroidEntryPoint
 class NotificationActionReceiver : BroadcastReceiver() {
-    lateinit var actionDao: ActionDao
+  @Inject  lateinit var actionDao: ActionDao
+
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return
         Log.d("Receiver","Action receiver $action")
@@ -24,9 +29,25 @@ class NotificationActionReceiver : BroadcastReceiver() {
             else -> "Unknow way"
         }
 
+
+
         CoroutineScope(Dispatchers.IO).launch {
-            actionDao.insertAction(ActionLog(actionType=actionType))
-            Log.d("Receiver","Log saved: $actionType")
+            try {
+                val safeActonDao = /*if(::actionDao.isInitialized){*/
+                    actionDao
+              /*  }else{
+                    Log.w("Receiver", "Hilt injection failed — using manual DB init")
+                    val db =  AppDatabase.getInstance(context)
+                    db.actionDao()
+
+                }*/
+                safeActonDao.insertAction(ActionLog(actionType=actionType))
+                Log.d("Receiver","Log saved: $actionType")
+                Log.i("logs","logs ${safeActonDao.getAllActionLog().first()}")
+            }catch (e:Exception){
+                Log.e("Receiver","Filed to insert action ",e)
+            }
+
         }
     }
 
