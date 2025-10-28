@@ -1,23 +1,31 @@
 package com.svetikov.mymood.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.svetikov.mymood.data.dao.ActionDao
 import com.svetikov.mymood.data.model.ActionLog
+import com.svetikov.mymood.notification.ActionDaoEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ActionViewModel @Inject constructor(private val dao: ActionDao) : ViewModel() {
+class ActionViewModel @Inject constructor(
+    private val dao: ActionDao,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
     val logs: StateFlow<List<ActionLog>> = dao.getAllActionLog()
         .stateIn(
             scope = viewModelScope,
@@ -28,8 +36,13 @@ class ActionViewModel @Inject constructor(private val dao: ActionDao) : ViewMode
     init {
 
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i("logs","viewModel init()")
-            Log.d("logs", "logs viewModel ${dao.getAllActionLog().single()}")
+            Log.i("logs", "viewModel init()")
+            val entryPoint = EntryPointAccessors.fromApplication(
+                context.applicationContext,
+                ActionDaoEntryPoint::class.java
+            )
+            val actionDao = entryPoint.actionDao()
+            Log.d("log", "log viewModel: ${actionDao.getAllActionLog().first()}")
         }
     }
 
