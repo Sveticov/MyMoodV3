@@ -13,10 +13,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,38 +24,47 @@ class ActionViewModel @Inject constructor(
     private val dao: ActionDao,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
-    val logs: StateFlow<List<ActionLog>> = dao.getAllActionLog()
+   /* val logs: StateFlow<List<ActionLog>> = dao.getAllActionLog()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
-        )
+        )*/
+    val entryPoint = EntryPointAccessors.fromApplication(
+        context.applicationContext,
+        ActionDaoEntryPoint::class.java
+    )
+
+    val actionDao = entryPoint.actionDao()
+
+    val _listAction = MutableStateFlow<List<ActionLog>>(emptyList())
+    val listAction = _listAction.asStateFlow()
+
+    val listWorker =  actionDao.getAllActionLog().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(500),
+        initialValue = emptyList()
+    )
 
     init {
+        Log.i("logs", "viewModel init()")
+        Log.d("list","viewModel list: ${listWorker.value}")
 
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i("logs", "viewModel init()")
-            val entryPoint = EntryPointAccessors.fromApplication(
-                context.applicationContext,
-                ActionDaoEntryPoint::class.java
-            )
-            val actionDao = entryPoint.actionDao()
-            Log.d("log", "log viewModel: ${actionDao.getAllActionLog().first()}")
+
+            Log.d("log", "log viewModel: ${actionDao.getAllActionLog().firstOrNull()}")
+
         }
     }
 
-    val _logs = MutableStateFlow<List<ActionLog>>(mutableListOf())
-    val myLogs = _logs.asStateFlow()
-
-    fun getMyLogs(): List<ActionLog> {
-        var list: List<ActionLog> = listOf(ActionLog(actionType = "some"))
+    fun deleteActionLog(actionLog: ActionLog){
         viewModelScope.launch {
-            list = dao.getAllActionLog().single()
+            dao.deleteActionLog(actionLog)
         }
-        return list
     }
 
-    fun createLogs() {
+
+    fun deleteLogs() {
         viewModelScope.launch {
             dao.deleteAllActionLog()
         }

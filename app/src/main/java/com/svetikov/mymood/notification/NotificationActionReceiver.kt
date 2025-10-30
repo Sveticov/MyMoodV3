@@ -13,7 +13,6 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
@@ -45,18 +44,12 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 val hiltEntryPoint = EntryPointAccessors.fromApplication(
                     context = context.applicationContext,
                     ActionDaoEntryPoint::class.java
-                )/*if(::actionDao.isInitialized){*/
-                   // actionDao
-              /*  }else{
-                    Log.w("Receiver", "Hilt injection failed — using manual DB init")
-                    val db =  AppDatabase.getInstance(context)
-                    db.actionDao()
+                )
 
-                }*/
                 val actionDao = hiltEntryPoint.actionDao()
                 actionDao.insertAction(ActionLog(actionType=actionType))
                 Log.d("Receiver","Log saved: $actionType")
-                Log.i("logs","logs: ${actionDao.getAllActionLog().first()}")
+
             }catch (e:Exception){
                 Log.e("Receiver","Filed to insert action ",e)
             }

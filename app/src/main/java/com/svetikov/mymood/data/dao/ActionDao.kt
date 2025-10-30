@@ -1,6 +1,7 @@
 package com.svetikov.mymood.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.svetikov.mymood.data.model.ActionLog
@@ -14,4 +15,6 @@ interface ActionDao {
     fun getAllActionLog(): Flow<List<ActionLog>>
     @Query("DELETE FROM action_log")
     suspend fun deleteAllActionLog()
+    @Delete
+    suspend fun deleteActionLog(actionLog: ActionLog)
 }
