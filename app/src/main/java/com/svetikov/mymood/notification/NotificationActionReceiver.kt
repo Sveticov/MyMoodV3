@@ -32,8 +32,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
         Log.d("Receiver","Action receiver $action")
 
         val actionType = when(action){
-            "ACTION_A_CLICKED" -> "Button A"
-            "ACTION_B_CLICKED" -> "Button B"
+            "ACTION_A_CLICKED" -> "😀"
+            "ACTION_B_CLICKED" -> "😢"
+            "ACTION_C_CLICKED" -> "😡"
             else -> "Unknow way"
         }
 

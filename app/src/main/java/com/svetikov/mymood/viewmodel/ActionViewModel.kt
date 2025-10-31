@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,7 +51,7 @@ class ActionViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            Log.d("log", "log viewModel: ${actionDao.getAllActionLog().firstOrNull()}")
+          //  Log.d("log", "log viewModel: ${actionDao.getAllActionLog().firstOrNull()}")
 
         }
     }

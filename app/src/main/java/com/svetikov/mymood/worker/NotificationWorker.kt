@@ -1,6 +1,7 @@
 package com.svetikov.mymood.worker
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -11,7 +12,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.svetikov.mymood.R
 import com.svetikov.mymood.notification.NotificationActionReceiver
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -28,10 +28,11 @@ class NotificationWorker @AssistedInject constructor(
         return Result.success()
     }
 
+    @SuppressLint("ResourceType")
     private fun showNotification() {
         val notificationId = Random.nextInt()
         val channelId = "TWO_HOUR_CHANNEL"
-//Pending Button A
+        //Pending Button A
         val intentA = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
             action = "ACTION_A_CLICKED"
         }
@@ -41,7 +42,7 @@ class NotificationWorker @AssistedInject constructor(
             intentA,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        //Pending Button A
+        //Pending Button B
         val intentB = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
             action = "ACTION_B_CLICKED"
         }
@@ -51,34 +52,47 @@ class NotificationWorker @AssistedInject constructor(
             intentB,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        //Pending Button C
+        val intentC = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_C_CLICKED"
+           /* putExtra("emoji","😊")*/
+        }
+        val pendingIntentC = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId + 3,
+            intentC,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
-        val builder = NotificationCompat.Builder(applicationContext,channelId)
-            .setSmallIcon(R.drawable.ic_launcher_background) //todo need to change
+
+
+
+        val builder = NotificationCompat.Builder(applicationContext, channelId)
+            .setSmallIcon(android.R.drawable.ic_menu_myplaces) //todo need to change
             .setContentTitle("Your two hours message")
             .setContentText("Please check your way")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .addAction(android.R.drawable.btn_star_big_on,"Button A",pendingIntentA)
-            .addAction(android.R.drawable.btn_star_big_on,"Button B",pendingIntentB)
+
+            .addAction(android.R.drawable.btn_star_big_on, "😀", pendingIntentA)
+            .addAction(android.R.drawable.btn_star_big_on, "😢", pendingIntentB)
+            .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)
+
             .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(applicationContext)){
+        with(NotificationManagerCompat.from(applicationContext)) {
 
             if (ActivityCompat.checkSelfPermission(
                     applicationContext,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return
             }
-            notify(notificationId,builder.build())
+            notify(notificationId, builder.build())
         }
 
     }
 }
+
+
+

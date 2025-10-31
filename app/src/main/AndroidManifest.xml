@@ -21,6 +21,7 @@
             <intent-filter>
                 <action android:name="ACTION_A_CLICKED" />
                 <action android:name="ACTION_B_CLICKED" />
+                <action android:name="ACTION_C_CLICKED" />
             </intent-filter>
         </receiver>
         <activity
