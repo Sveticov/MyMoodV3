@@ -7,11 +7,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.RemoteViews
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.svetikov.mymood.R
 import com.svetikov.mymood.notification.NotificationActionReceiver
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -55,7 +57,7 @@ class NotificationWorker @AssistedInject constructor(
         //Pending Button C
         val intentC = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
             action = "ACTION_C_CLICKED"
-           /* putExtra("emoji","😊")*/
+            /* putExtra("emoji","😊")*/
         }
         val pendingIntentC = PendingIntent.getBroadcast(
             applicationContext,
@@ -63,19 +65,44 @@ class NotificationWorker @AssistedInject constructor(
             intentC,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        //Pending Button D
+        val intentD = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_D_CLICKED"
+            /* putExtra("emoji","😊")*/
+        }
+        val pendingIntentD = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId + 4,
+            intentD,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
+        val customView =
+            RemoteViews(applicationContext.packageName, R.layout.notification_custom_layout)
+        customView.setOnClickPendingIntent(R.id.action_button_1, pendingIntentA)
+        customView.setOnClickPendingIntent(R.id.action_button_2, pendingIntentB)
+        customView.setOnClickPendingIntent(R.id.action_button_3, pendingIntentC)
+        customView.setOnClickPendingIntent(R.id.action_button_4, pendingIntentD)
 
+        customView.setTextViewText(R.id.notification_title, "Your two hours message")
+        customView.setTextViewText(R.id.notification_text, "Please check your way")
 
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(android.R.drawable.ic_menu_myplaces) //todo need to change
-            .setContentTitle("Your two hours message")
-            .setContentText("Please check your way")
+            /* .setContentTitle("Your two hours message")
+             .setContentText("Please check your way")*/
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            //
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(customView)
+            //
+            /* .addAction(android.R.drawable.btn_star_big_on, "😀", pendingIntentA)
+             .addAction(android.R.drawable.btn_star_big_on, "😢", pendingIntentB)
+             .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)
+             .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)
+             .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)*/
 
-            .addAction(android.R.drawable.btn_star_big_on, "😀", pendingIntentA)
-            .addAction(android.R.drawable.btn_star_big_on, "😢", pendingIntentB)
-            .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)
 
             .setAutoCancel(true)
 
@@ -93,6 +120,8 @@ class NotificationWorker @AssistedInject constructor(
 
     }
 }
+
+
 
 
 

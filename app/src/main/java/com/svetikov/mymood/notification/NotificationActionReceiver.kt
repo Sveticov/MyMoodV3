@@ -35,6 +35,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             "ACTION_A_CLICKED" -> "😀"
             "ACTION_B_CLICKED" -> "😢"
             "ACTION_C_CLICKED" -> "😡"
+            "ACTION_D_CLICKED" -> "\uD83D\uDE34"//😴
             else -> "Unknow way"
         }
 

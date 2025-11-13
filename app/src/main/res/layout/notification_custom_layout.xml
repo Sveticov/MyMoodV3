@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/notification_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your two hours message"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/notification_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please check your way"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
+
+        <ImageButton
+            android:id="@+id/action_button_1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/png_transparent_google_i_o_emoji_android_oreo_sunglasses_emoji_smiley_emoticon_mobile_phones"
+            android:contentDescription="😀"
+            android:background="?android:attr/selectableItemBackgroundBorderless"/>
+
+        <ImageButton
+            android:id="@+id/action_button_2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/btn_star_big_on"
+            android:contentDescription="😢"
+            android:background="?android:attr/selectableItemBackgroundBorderless"/>
+
+        <ImageButton
+            android:id="@+id/action_button_3"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/btn_star_big_on"
+            android:contentDescription="😡"
+            android:background="?android:attr/selectableItemBackgroundBorderless"/>
+        <ImageButton
+            android:id="@+id/action_button_4"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/btn_star_big_on"
+            android:contentDescription="😴"
+            android:background="?android:attr/selectableItemBackgroundBorderless"/>
+
+
+    </LinearLayout>
+</LinearLayout>

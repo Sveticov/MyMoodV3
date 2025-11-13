@@ -45,6 +45,7 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+        // implementation(libs.androidx.ui.desktop)
     kapt("com.google.dagger:hilt-compiler:2.51.1")
     kapt("androidx.hilt:hilt-compiler:1.3.0")
         // annotationProcessor("com.google.dagger:hilt-compiler:2.51.1")
