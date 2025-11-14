@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="2dp">
 
     <TextView
         android:id="@+id/notification_title"
@@ -24,39 +24,103 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="end"
-        android:layout_marginTop="8dp">
-
-        <ImageButton
+        android:gravity="center"
+        android:layout_marginTop="@dimen/notif_action_emoji_spacing">
+        <TextView
             android:id="@+id/action_button_1"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/png_transparent_google_i_o_emoji_android_oreo_sunglasses_emoji_smiley_emoticon_mobile_phones"
-            android:contentDescription="😀"
-            android:background="?android:attr/selectableItemBackgroundBorderless"/>
-
-        <ImageButton
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😀"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+        <TextView
             android:id="@+id/action_button_2"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@android:drawable/btn_star_big_on"
-            android:contentDescription="😢"
-            android:background="?android:attr/selectableItemBackgroundBorderless"/>
-
-        <ImageButton
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😢"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+        <TextView
             android:id="@+id/action_button_3"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@android:drawable/btn_star_big_on"
-            android:contentDescription="😡"
-            android:background="?android:attr/selectableItemBackgroundBorderless"/>
-        <ImageButton
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😡"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+        <TextView
             android:id="@+id/action_button_4"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@android:drawable/btn_star_big_on"
-            android:contentDescription="😴"
-            android:background="?android:attr/selectableItemBackgroundBorderless"/>
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😴"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/notif_action_emoji_spacing">
+        <TextView
+            android:id="@+id/action_button_5"
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😵"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/action_button_6"
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="🥰"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/action_button_7"
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😐"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
+        <TextView
+            android:id="@+id/action_button_8"
+            android:layout_width="@dimen/notif_action_button_size"
+            android:layout_height="@dimen/notif_action_button_size"
+            android:text="😒"
+            android:gravity="center"
+            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="@dimen/notif_action_emoji_spacing"
+            android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:clickable="true"
+            android:focusable="true" />
 
 
     </LinearLayout>

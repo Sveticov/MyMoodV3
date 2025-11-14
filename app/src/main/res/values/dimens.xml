@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="notif_action_button_size">52dp</dimen>
+    <dimen name="notif_action_emoji_size">42sp</dimen>
+    <dimen name="notif_action_emoji_spacing">16dp</dimen>
+</resources>

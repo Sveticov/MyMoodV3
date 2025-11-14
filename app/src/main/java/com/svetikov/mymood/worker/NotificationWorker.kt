@@ -18,7 +18,7 @@ import com.svetikov.mymood.notification.NotificationActionReceiver
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlin.random.Random
-
+var ID_NOTIFICATION = 0
 class NotificationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters
@@ -33,6 +33,7 @@ class NotificationWorker @AssistedInject constructor(
     @SuppressLint("ResourceType")
     private fun showNotification() {
         val notificationId = Random.nextInt()
+        ID_NOTIFICATION = notificationId
         val channelId = "TWO_HOUR_CHANNEL"
         //Pending Button A
         val intentA = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
@@ -68,7 +69,7 @@ class NotificationWorker @AssistedInject constructor(
         //Pending Button D
         val intentD = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
             action = "ACTION_D_CLICKED"
-            /* putExtra("emoji","😊")*/
+            /* putExtra("emoji","😴")*/
         }
         val pendingIntentD = PendingIntent.getBroadcast(
             applicationContext,
@@ -76,6 +77,51 @@ class NotificationWorker @AssistedInject constructor(
             intentD,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        //Pending Button E
+        val intentE = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_E_CLICKED"
+            /* putExtra("emoji","😵")*/
+        }
+        val pendingIntentE = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId + 5,
+            intentE,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        //Pending Button F
+        val intentF = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_F_CLICKED"
+            /* putExtra("emoji","😊")*/
+        }
+        val pendingIntentF = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId + 6,
+            intentF,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        //Pending Button G
+        val intentG = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_G_CLICKED"
+            /* putExtra("emoji","😊")*/
+        }
+        val pendingIntentG = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId + 7,
+            intentG,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        //Pending Button V
+        val intentV = Intent(applicationContext, NotificationActionReceiver::class.java).apply {
+            action = "ACTION_V_CLICKED"
+            /* putExtra("emoji","😊")*/
+        }
+        val pendingIntentV = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationId + 8,
+            intentV,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
 
         val customView =
             RemoteViews(applicationContext.packageName, R.layout.notification_custom_layout)
@@ -83,6 +129,10 @@ class NotificationWorker @AssistedInject constructor(
         customView.setOnClickPendingIntent(R.id.action_button_2, pendingIntentB)
         customView.setOnClickPendingIntent(R.id.action_button_3, pendingIntentC)
         customView.setOnClickPendingIntent(R.id.action_button_4, pendingIntentD)
+        customView.setOnClickPendingIntent(R.id.action_button_5, pendingIntentE)
+        customView.setOnClickPendingIntent(R.id.action_button_6, pendingIntentF)
+        customView.setOnClickPendingIntent(R.id.action_button_7, pendingIntentG)
+        customView.setOnClickPendingIntent(R.id.action_button_8, pendingIntentV)
 
         customView.setTextViewText(R.id.notification_title, "Your two hours message")
         customView.setTextViewText(R.id.notification_text, "Please check your way")
