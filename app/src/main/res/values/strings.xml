@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MyMood</string>
+    <string name="happy">HAPPY</string>
+    <string name="cray">CRAY</string>
+    <string name="angry">ANGRY</string>
+    <string name="sleep">SLEEP</string>
+    <string name="wow">WOW</string>
+    <string name="love">LOVE</string>
+    <string name="indifference">INDIFFERENCE</string>
+    <string name="unamused">UNAMUSED</string>
 </resources>

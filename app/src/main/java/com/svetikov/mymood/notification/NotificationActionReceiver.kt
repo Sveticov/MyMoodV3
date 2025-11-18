@@ -8,6 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.impl.utils.ForceStopRunnable.BroadcastReceiver
 import com.svetikov.mymood.data.dao.ActionDao
 import com.svetikov.mymood.data.model.ActionLog
+import com.svetikov.mymood.data.model.EmojiFace
 import com.svetikov.mymood.worker.ID_NOTIFICATION
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -34,14 +35,14 @@ class NotificationActionReceiver : BroadcastReceiver() {
         Log.d("Receiver", "Action receiver $action")
 
         val actionType = when (action) {
-            "ACTION_A_CLICKED" -> "😀"
-            "ACTION_B_CLICKED" -> "😢"
-            "ACTION_C_CLICKED" -> "😡"
-            "ACTION_D_CLICKED" -> "\uD83D\uDE34"//😴
-            "ACTION_E_CLICKED" -> "\uD83D\uDE35"//😵
-            "ACTION_F_CLICKED" -> "\uD83E\uDD70"//🥰
-            "ACTION_G_CLICKED" -> "\uD83D\uDE10"//😐
-            "ACTION_V_CLICKED" -> "\uD83D\uDE12"//😒
+            "ACTION_A_CLICKED" -> EmojiFace.HAPPY.face//"😀"
+            "ACTION_B_CLICKED" -> EmojiFace.CRAY.face//"😢"
+            "ACTION_C_CLICKED" -> EmojiFace.ANGRY.face//"😡"
+            "ACTION_D_CLICKED" -> EmojiFace.SLEEP.face//"\uD83D\uDE34"//😴
+            "ACTION_E_CLICKED" -> EmojiFace.WOW.face//"\uD83D\uDE35"//😵
+            "ACTION_F_CLICKED" -> EmojiFace.LOVE.face//"\uD83E\uDD70"//🥰
+            "ACTION_G_CLICKED" -> EmojiFace.INDIFFERENCE.face//"\uD83D\uDE10"//😐
+            "ACTION_V_CLICKED" -> EmojiFace.UNAMUSED.face//"\uD83D\uDE12"//😒
             else -> "Unknow way"
         }
 

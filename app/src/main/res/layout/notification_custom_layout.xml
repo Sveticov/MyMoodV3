@@ -36,7 +36,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/happy"/>
         <TextView
             android:id="@+id/action_button_2"
             android:layout_width="@dimen/notif_action_button_size"
@@ -47,7 +48,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/cray"/>
         <TextView
             android:id="@+id/action_button_3"
             android:layout_width="@dimen/notif_action_button_size"
@@ -58,7 +60,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/angry"/>
         <TextView
             android:id="@+id/action_button_4"
             android:layout_width="@dimen/notif_action_button_size"
@@ -69,7 +72,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/sleep"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -87,7 +91,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/wow"/>
         <TextView
             android:id="@+id/action_button_6"
             android:layout_width="@dimen/notif_action_button_size"
@@ -98,7 +103,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/love"/>
         <TextView
             android:id="@+id/action_button_7"
             android:layout_width="@dimen/notif_action_button_size"
@@ -109,7 +115,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/indifference"/>
         <TextView
             android:id="@+id/action_button_8"
             android:layout_width="@dimen/notif_action_button_size"
@@ -120,7 +127,8 @@
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tooltipText="@string/unamused"/>
 
 
     </LinearLayout>
