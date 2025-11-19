@@ -48,6 +48,8 @@ class ActionViewModel @Inject constructor(
     private val startDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
     private val _dateGet = MutableStateFlow<String>(startDate)
     val dateGet = _dateGet.asStateFlow()
+    val minDate = MutableStateFlow<Long?>(null)
+    val maxDate = MutableStateFlow<Long?>(null)
 
     val listWorker = actionDao.getAllActionLog().stateIn(
         scope = viewModelScope,
@@ -67,11 +69,20 @@ class ActionViewModel @Inject constructor(
         listWorker.collectLatest { list ->
             Log.i("list collectLatest", "$list")
             if (list.isNotEmpty()) {
+
+                val sortedDateMinMax = list.sortedBy { it.timestamp }
+                minDate.value = sortedDateMinMax.first().timestamp
+                maxDate.value = sortedDateMinMax.last().timestamp
+
                 _listMoodSegment.value =
                     calculatePercentEmoji(list, targetDate = _dateGet.value)
                 Log.i("_listMoodSegment.value", "${_listMoodSegment.value}")
                 _emojiWin.value = _listMoodSegment.value.reversed().map { it.label }.firstOrNull()
                     ?: "\uD83D\uDE00"
+            }
+            else{
+                minDate.value = null
+                maxDate.value = null
             }
         }
     }
@@ -94,8 +105,6 @@ class ActionViewModel @Inject constructor(
         list: List<ActionLog>,
         targetDate: String = "2025-11-14"
     ): List<MoodSegment> {
-        var targetDateLocal = targetDate
-        var listSortedByTimeLocal = emptyList<Pair<String, Int>>()
 
            val listSortByTime = list.filter {
                 sortedTime(timestamp = it.timestamp, targetDateStr = targetDate)
@@ -104,7 +113,6 @@ class ActionViewModel @Inject constructor(
                 .map {
                     Pair(it.key, it.value.count())
                 }
-
 
         if (listSortByTime.isNotEmpty()) {
             val sumEmoji = listSortByTime
@@ -155,18 +163,17 @@ class ActionViewModel @Inject constructor(
 
     fun descriptionEmoji(label: String): String {
         return when (label) {
-            EmojiFace.HAPPY.face -> EmojiFace.HAPPY.name          //"😀"
-            EmojiFace.CRAY.face -> EmojiFace.CRAY.name             //"😢"
-            EmojiFace.ANGRY.face -> EmojiFace.ANGRY.name              //"😡"
-            EmojiFace.SLEEP.face -> EmojiFace.SLEEP.name          //😴
-            EmojiFace.WOW.face -> EmojiFace.WOW.name                //😵
-            EmojiFace.LOVE.face -> EmojiFace.LOVE.name              //🥰
+            EmojiFace.HAPPY.face -> EmojiFace.HAPPY.name                  //"😀"
+            EmojiFace.CRAY.face -> EmojiFace.CRAY.name                    //"😢"
+            EmojiFace.ANGRY.face -> EmojiFace.ANGRY.name                  //"😡"
+            EmojiFace.SLEEP.face -> EmojiFace.SLEEP.name                  //😴
+            EmojiFace.WOW.face -> EmojiFace.WOW.name                      //😵
+            EmojiFace.LOVE.face -> EmojiFace.LOVE.name                    //🥰
             EmojiFace.INDIFFERENCE.face -> EmojiFace.INDIFFERENCE.name    //😐
-            EmojiFace.UNAMUSED.face -> EmojiFace.UNAMUSED.name  //😒
-            else -> "none"
+            EmojiFace.UNAMUSED.face -> EmojiFace.UNAMUSED.name            //😒
+            else -> EmojiFace.HAPPY.name
         }
     }
-
 
 }
 

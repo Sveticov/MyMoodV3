@@ -46,7 +46,9 @@ import com.svetikov.mymood.data.model.MoodSegment
 import com.svetikov.mymood.viewmodel.ActionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -199,12 +201,20 @@ fun CenterEmoji(
 
 @Composable
 fun DateNavigator(modifier: Modifier = Modifier, viewModel: ActionViewModel) {
+    val minDate by viewModel.minDate.collectAsState()
+    val maxDate by viewModel.maxDate.collectAsState()
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    val dateGet by viewModel.dateGet.collectAsState()
+
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    fun updateDate(days: Long) {
-             selectedDate =  selectedDate.plusDays(days)
-    }
+    fun Long.toLocalDate(): LocalDate =
+        Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDate()
+
+    val min = minDate?.toLocalDate()
+    val max = maxDate?.toLocalDate()
+
+    val prevEnabled = min != null && selectedDate > min
+    val nextEnabled = max != null && selectedDate < max
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,22 +222,29 @@ fun DateNavigator(modifier: Modifier = Modifier, viewModel: ActionViewModel) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Button(onClick = {
-            updateDate(-1)
-            viewModel.getDate(selectedDate.format(dateFormatter))
-        }, contentPadding = PaddingValues(16.dp)) {
+        Button(
+            enabled = prevEnabled,
+            onClick = {
+                selectedDate = selectedDate.minusDays(1)
+                if (min != null && selectedDate < min) selectedDate = min!!
+                viewModel.getDate(selectedDate.format(dateFormatter))
+            }, contentPadding = PaddingValues(16.dp)
+        ) {
             Text("<")
         }
         Text(
-            text = dateGet,
-            style = MaterialTheme.typography.titleLarge
+            text = selectedDate.format(dateFormatter),
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White
         )
-        Button(onClick = {
-            updateDate(1)
-            if (selectedDate>LocalDate.now())
-                selectedDate = LocalDate.now()
-            viewModel.getDate(selectedDate.format(dateFormatter))
-        }, contentPadding = PaddingValues(16.dp)) {
+        Button(
+            enabled = nextEnabled,
+            onClick = {
+                selectedDate = selectedDate.plusDays(1)
+                if (max != null && selectedDate > max) selectedDate = max!!
+                viewModel.getDate(selectedDate.format(dateFormatter))
+            }, contentPadding = PaddingValues(16.dp)
+        ) {
             Text(">")
         }
     }

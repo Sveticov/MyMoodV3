@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
         Log.d("workRequest","workRequest ${workRequest.id}")
     }
     private fun  scheduleOne(context: Context){
+        Log.d("Start","START ONE Message")
         val oneTime = OneTimeWorkRequestBuilder<NotificationWorker>()
             .build()
         WorkManager.getInstance(context)
