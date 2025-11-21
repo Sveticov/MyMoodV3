@@ -1,4 +1,4 @@
-package com.svetikov.mymood.ui.pages
+ package com.svetikov.mymood.ui.pages
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -60,6 +60,7 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
     val emojiWin by viewModel.emojiWin.collectAsState()
     var descriptionEmoji by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    var some by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -120,6 +121,8 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
                 }
             }
         }
+
+
     }
 }
 
