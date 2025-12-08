@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private var dialogShow = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

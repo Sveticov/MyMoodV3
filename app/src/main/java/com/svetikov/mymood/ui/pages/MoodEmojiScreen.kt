@@ -1,4 +1,4 @@
- package com.svetikov.mymood.ui.pages
+package com.svetikov.mymood.ui.pages
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -9,16 +9,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,6 +68,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = hiltViewModel()) {
 
@@ -60,69 +76,89 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
     val emojiWin by viewModel.emojiWin.collectAsState()
     var descriptionEmoji by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-    var some by remember { mutableStateOf(0) }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.linearGradient(
-                    listOf(Color(0xFF6366F1), Color(0xFF4CAF50))
-                )
-            )
-            .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Spacer(modifier = Modifier.padding(top = 12.dp))
-        DateNavigator(modifier = Modifier.padding(top = 45.dp), viewModel = viewModel)
-
-        Spacer(modifier = Modifier.padding(top = 100.dp))
-
-        DonutChat(listMoodSegments) { CenterEmoji(label = emojiWin) }
-
-        Spacer(modifier = Modifier.padding(top = 100.dp))
-        Text(descriptionEmoji, fontSize = 22.sp, color = Color.White)
-        LazyVerticalGrid(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(start = 50.dp),
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(1.dp),
-            horizontalArrangement = Arrangement.spacedBy(1.dp)
+    //--------------------------------modalBottomSheet--------------------------
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState
         ) {
-            items(listMoodSegments) { it ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .clickable {
-                            scope.launch {
-                                descriptionEmoji = viewModel.descriptionEmoji(it.label)
-                                delay(1500)
-                                descriptionEmoji = ""
-                            }
+            NotificationSettingContent(
+                onClose = { showBottomSheet = false }
+            )
+        }
+    }
 
-                        }
-                        .padding(16.dp)
-                ) {
-                    Box(
+    Scaffold(
+        bottomBar = {
+            BottomNavigation(onMenuClick = { showBottomSheet = true })
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.linearGradient(
+                        listOf(Color(0xFF6366F1), Color(0xFF4CAF50))
+                    )
+                )
+                .padding(paddingValues)
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+            DateNavigator(modifier = Modifier.padding(top = 45.dp), viewModel = viewModel)
+
+            Spacer(modifier = Modifier.padding(top = 100.dp))
+
+            DonutChat(listMoodSegments) { CenterEmoji(label = emojiWin) }
+
+            Spacer(modifier = Modifier.padding(top = 100.dp))
+            Text(descriptionEmoji, fontSize = 22.sp, color = Color.White)
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 50.dp),
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(1.dp),
+                horizontalArrangement = Arrangement.spacedBy(1.dp)
+            ) {
+                items(listMoodSegments) { it ->
+                    Row(
                         modifier = Modifier
-                            .size(25.dp)
-                            .background(it.color)
-                            .padding(end = 2.dp)
-                    )
-                    Text(it.label, Modifier.padding(2.dp), fontSize = 22.sp)
-                    Text(
-                        "${(it.percentage * 100).roundToInt()} %",
-                        Modifier.padding(2.dp),
-                        fontSize = 22.sp
-                    )
+                            .fillMaxWidth(0.8f)
+                            .clickable {
+                                scope.launch {
+                                    descriptionEmoji = viewModel.descriptionEmoji(it.label)
+                                    delay(1500)
+                                    descriptionEmoji = ""
+                                }
+
+                            }
+                            .padding(16.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(25.dp)
+                                .background(it.color)
+                                .padding(end = 2.dp)
+                        )
+                        Text(it.label, Modifier.padding(2.dp), fontSize = 22.sp)
+                        Text(
+                            "${(it.percentage * 100).roundToInt()} %",
+                            Modifier.padding(2.dp),
+                            fontSize = 22.sp
+                        )
+                    }
                 }
             }
+
+
         }
-
-
     }
 }
 
@@ -252,4 +288,65 @@ fun DateNavigator(modifier: Modifier = Modifier, viewModel: ActionViewModel) {
         }
     }
 
+}
+
+@Composable
+fun BottomNavigation(onMenuClick: () -> Unit) {
+
+    BottomAppBar(
+        containerColor = Color.White.copy(alpha = 0.2f),
+        windowInsets = WindowInsets.navigationBars,
+        actions = {
+            Icon(
+                imageVector = Icons.Filled.FavoriteBorder,
+                contentDescription = "Test",
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onMenuClick) {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = "Settings Message",
+                    tint = Color.White
+                )
+            }
+        }
+    )
+
+}
+
+@Composable
+fun NotificationSettingContent(modifier: Modifier = Modifier, onClose: () -> Unit) {
+
+    var sliderPositions by remember { mutableStateOf(1f) }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Settings time messages",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+        Spacer(modifier= Modifier.padding(vertical = 8.dp))
+
+        Slider(
+            value = sliderPositions,
+            onValueChange = {range->sliderPositions=range},
+            valueRange = 1f..5f,
+            steps = 3,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+        )
+        Text(sliderPositions.toString()+"H", style = MaterialTheme.typography.headlineSmall)
+
+        Button(onClick = onClose) { Text("Close") }
+        Spacer(
+            modifier = Modifier.height(
+                WindowInsets.navigationBars.asPaddingValues()
+                    .calculateBottomPadding()
+            )
+        )
+    }
 }

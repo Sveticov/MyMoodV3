@@ -17,7 +17,7 @@ import com.svetikov.mymood.R
 import com.svetikov.mymood.notification.NotificationActionReceiver
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlin.random.Random
+
 var ID_NOTIFICATION = 0
 class NotificationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
@@ -32,7 +32,7 @@ class NotificationWorker @AssistedInject constructor(
 
     @SuppressLint("ResourceType")
     private fun showNotification() {
-        val notificationId = Random.nextInt()
+        val notificationId = 1001//Random.nextInt()
         ID_NOTIFICATION = notificationId
         val channelId = "TWO_HOUR_CHANNEL"
         //Pending Button A

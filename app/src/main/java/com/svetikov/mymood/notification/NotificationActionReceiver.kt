@@ -26,9 +26,9 @@ interface ActionDaoEntryPoint {
 }
 
 @SuppressLint("RestrictedApi")
-//@AndroidEntryPoint
+
 class NotificationActionReceiver : BroadcastReceiver() {
-    //@Inject  lateinit var actionDao: ActionDao
+
 
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return

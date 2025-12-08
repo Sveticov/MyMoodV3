@@ -62,6 +62,8 @@ dependencies {
     implementation("androidx.work:work-runtime:2.11.0")
     //ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
+    //data store
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
