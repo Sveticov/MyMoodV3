@@ -86,6 +86,7 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
             sheetState = sheetState
         ) {
             NotificationSettingContent(
+                viewModel = viewModel,
                 onClose = { showBottomSheet = false }
             )
         }
@@ -316,9 +317,13 @@ fun BottomNavigation(onMenuClick: () -> Unit) {
 }
 
 @Composable
-fun NotificationSettingContent(modifier: Modifier = Modifier, onClose: () -> Unit) {
-
-    var sliderPositions by remember { mutableStateOf(1f) }
+fun NotificationSettingContent(
+    modifier: Modifier = Modifier,
+    viewModel: ActionViewModel,
+    onClose: () -> Unit
+) {
+    val hours by viewModel.notificationIntervalHours.collectAsState()
+    var sliderPositions by remember { mutableStateOf(hours.toFloat()) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -330,18 +335,22 @@ fun NotificationSettingContent(modifier: Modifier = Modifier, onClose: () -> Uni
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(bottom = 24.dp)
         )
-        Spacer(modifier= Modifier.padding(vertical = 8.dp))
+        Spacer(modifier = Modifier.padding(vertical = 8.dp))
 
         Slider(
             value = sliderPositions,
-            onValueChange = {range->sliderPositions=range},
+            onValueChange = { range -> sliderPositions = range
+                viewModel.updateNotificationInterval(range.toInt())
+                            },
             valueRange = 1f..5f,
             steps = 3,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
         )
-        Text(sliderPositions.toString()+"H", style = MaterialTheme.typography.headlineSmall)
+        Text(sliderPositions.toString().replace(".0"," H") , style = MaterialTheme.typography.headlineSmall)
 
-        Button(onClick = onClose) { Text("Close") }
+        Button(onClick = onClose ) { Text("Close") }
         Spacer(
             modifier = Modifier.height(
                 WindowInsets.navigationBars.asPaddingValues()

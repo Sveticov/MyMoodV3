@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -28,6 +29,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.svetikov.mymood.ui.pages.ActionLogScreen
 import com.svetikov.mymood.ui.theme.MyMoodTheme
+import com.svetikov.mymood.viewmodel.ActionViewModel
 import com.svetikov.mymood.worker.NotificationWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
@@ -36,13 +38,13 @@ import java.util.concurrent.TimeUnit
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-
+    private val viewModel: ActionViewModel by viewModels<ActionViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("onCreate", "onCreate")
         //schedule
         window.decorView.post {
-            schedulePeriodicNotification(this)
+            schedulePeriodicNotification(this, hors = viewModel.notificationIntervalHours.value)
             scheduleOne(this)
         }
 
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NotificationPermissionDialog(
                         isFirstLaunch = isFirstLaunch,
-                        onHandler = {markLaunchHandled()}
+                        onHandler = { markLaunchHandled() }
                     )
                     ActionLogScreen(modifier = Modifier.padding(innerPadding))
                 }
@@ -64,12 +66,11 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
     //--------------------------work manager------------------------------
-    private fun schedulePeriodicNotification(context: Context) {
+    private fun schedulePeriodicNotification(context: Context,hors:Int=1) {
         val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            15,
-            TimeUnit.MINUTES
+            repeatInterval = (hors*60L),
+            repeatIntervalTimeUnit = TimeUnit.MINUTES
         ).build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -78,6 +79,7 @@ class MainActivity : ComponentActivity() {
             workRequest
         )
         Log.d("workRequest", "workRequest ${workRequest.id}")
+        Log.d("workRequest", "workRequest ${workRequest.workSpec.scheduleRequestedAt}")
     }
 
     private fun scheduleOne(context: Context) {
@@ -137,7 +139,7 @@ class MainActivity : ComponentActivity() {
                 },
                 dismissButton = {
                     Button(onClick = {
-                        showDialog=false
+                        showDialog = false
                         onHandler()
                     }) { Text("Cancel") }
                 }

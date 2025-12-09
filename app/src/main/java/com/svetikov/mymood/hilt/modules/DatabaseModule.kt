@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.svetikov.mymood.data.dao.ActionDao
 import com.svetikov.mymood.data.database.AppDatabase
+import com.svetikov.mymood.datastore.SettingDataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,5 +29,11 @@ object DatabaseModule {
     @Provides
     fun provideActionDao(database: AppDatabase):ActionDao{
         return database.actionDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsStoreManager(@ApplicationContext context: Context): SettingDataStoreManager{
+        return SettingDataStoreManager(context)
     }
 }

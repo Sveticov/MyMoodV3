@@ -9,6 +9,7 @@ import com.svetikov.mymood.data.dao.ActionDao
 import com.svetikov.mymood.data.model.ActionLog
 import com.svetikov.mymood.data.model.EmojiFace
 import com.svetikov.mymood.data.model.MoodSegment
+import com.svetikov.mymood.datastore.SettingDataStoreManager
 import com.svetikov.mymood.notification.ActionDaoEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
@@ -30,7 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ActionViewModel @Inject constructor(
     private val dao: ActionDao,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val dataStoreManager: SettingDataStoreManager
 ) : ViewModel() {
 
     val entryPoint = EntryPointAccessors.fromApplication(
@@ -172,6 +175,22 @@ class ActionViewModel @Inject constructor(
             EmojiFace.INDIFFERENCE.face -> EmojiFace.INDIFFERENCE.name    //😐
             EmojiFace.UNAMUSED.face -> EmojiFace.UNAMUSED.name            //😒
             else -> EmojiFace.HAPPY.name
+        }
+    }
+
+    //-----------------------------Setting Data Store Manager------------------------------
+    //---read from DataStore and convert it to StateFlow-----------------------------------
+    val notificationIntervalHours: StateFlow<Int> = dataStoreManager.notificationIntervalFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 1
+        )
+    //---save new interval-----------------------------------------------------------------
+    fun updateNotificationInterval(hours:Int){
+        viewModelScope.launch {
+            dataStoreManager.saveInterval(hours)
+            Log.d("workRequest", "workRequest ${hours}")
         }
     }
 

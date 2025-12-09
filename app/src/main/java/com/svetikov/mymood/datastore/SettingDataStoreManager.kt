@@ -2,11 +2,16 @@ package com.svetikov.mymood.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SettingDataStoreManager @Inject constructor(@ApplicationContext private val context: Context) {
@@ -23,4 +28,15 @@ class SettingDataStoreManager @Inject constructor(@ApplicationContext private va
             preferences[PreferencesKeys.INTERVAL_HOURS]=hours
         }
     }
+    val notificationIntervalFlow: Flow<Int> =context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException){
+                emit(emptyPreferences())
+            }else{
+                throw exception
+            }
+        }
+        .map { preferences ->
+            preferences[PreferencesKeys.INTERVAL_HOURS] ?: 1
+        }
 }
