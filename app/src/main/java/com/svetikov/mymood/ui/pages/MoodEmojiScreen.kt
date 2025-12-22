@@ -113,11 +113,11 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
             Spacer(modifier = Modifier.padding(top = 12.dp))
             DateNavigator(modifier = Modifier.padding(top = 45.dp), viewModel = viewModel)
 
-            Spacer(modifier = Modifier.padding(top = 100.dp))
+            Spacer(modifier = Modifier.padding(top = 50.dp))
 
             DonutChat(listMoodSegments) { CenterEmoji(label = emojiWin) }
 
-            Spacer(modifier = Modifier.padding(top = 100.dp))
+            Spacer(modifier = Modifier.padding(top = 50.dp))
             Text(descriptionEmoji, fontSize = 22.sp, color = Color.White)
             LazyVerticalGrid(
                 modifier = Modifier
@@ -128,7 +128,7 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
                 verticalArrangement = Arrangement.spacedBy(1.dp),
                 horizontalArrangement = Arrangement.spacedBy(1.dp)
             ) {
-                items(listMoodSegments) { it ->
+                items(listMoodSegments.reversed()) { it ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
@@ -146,8 +146,22 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
                             modifier = Modifier
                                 .size(25.dp)
                                 .background(it.color)
-                                .padding(end = 2.dp)
-                        )
+                                .padding(end = 2.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .background(Color.White.copy(alpha = 0.1f))
+                                    .padding(1.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .background(Color.White.copy(alpha = 0.1f))
+                                    .padding(1.dp)
+                            )
+                        }
                         Text(it.label, Modifier.padding(2.dp), fontSize = 22.sp)
                         Text(
                             "${(it.percentage * 100).roundToInt()} %",
@@ -168,7 +182,7 @@ fun ActionLogScreen(modifier: Modifier = Modifier, viewModel: ActionViewModel = 
 fun DonutChat(
     segments: List<MoodSegment>,
     modifier: Modifier = Modifier,
-    chartSize: Dp = 250.dp,
+    chartSize: Dp = 280.dp,
     strokeWidth: Dp = 55.dp,
     centerContent: @Composable () -> Unit
 ) {
@@ -182,7 +196,6 @@ fun DonutChat(
                     radius = (size.minDimension / 2),
                     center = center,
                     style = Fill,
-                    // Blur через RenderEffect (Android 12+)
                     blendMode = BlendMode.SrcOver,
                 )
             },
@@ -198,6 +211,7 @@ fun DonutChat(
                 val sweepAngle = segment.percentage * sweepAngleCoefficient
 
                 drawArc(
+                    //color =  segment.color,
                     color = segment.color,
                     startAngle = currentStartAngle,
                     sweepAngle = sweepAngle,
@@ -207,7 +221,23 @@ fun DonutChat(
                     style = Stroke(width = strokeWidth.toPx())
                 )
                 currentStartAngle += sweepAngle
+
             }
+            var strokeCoefficient = 1.2f
+            repeat(7) {
+                drawArc(
+                    color = Color.White.copy(alpha = 0.1f),
+                    startAngle = 0f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    style = Stroke(width = (strokeWidth / strokeCoefficient).toPx()),
+                    topLeft = Offset(0f, 0f),
+                    size = rectSize
+                )
+                strokeCoefficient += 0.6f
+            }
+
+
         }
 
         centerContent()
@@ -326,6 +356,7 @@ fun NotificationSettingContent(
     var sliderPositions by remember { mutableStateOf(hours.toFloat()) }
     Column(
         modifier = Modifier
+            .background(Color.White.copy(alpha = 0.2f))
             .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -339,18 +370,22 @@ fun NotificationSettingContent(
 
         Slider(
             value = sliderPositions,
-            onValueChange = { range -> sliderPositions = range
+            onValueChange = { range ->
+                sliderPositions = range
                 viewModel.updateNotificationInterval(range.toInt())
-                            },
+            },
             valueRange = 1f..5f,
             steps = 3,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
         )
-        Text(sliderPositions.toString().replace(".0"," H") , style = MaterialTheme.typography.headlineSmall)
+        Text(
+            sliderPositions.toString().replace(".0", " H"),
+            style = MaterialTheme.typography.headlineSmall
+        )
 
-        Button(onClick = onClose ) { Text("Close") }
+        Button(onClick = onClose) { Text("Close") }
         Spacer(
             modifier = Modifier.height(
                 WindowInsets.navigationBars.asPaddingValues()

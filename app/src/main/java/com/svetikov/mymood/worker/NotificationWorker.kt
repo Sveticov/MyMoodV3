@@ -17,15 +17,47 @@ import com.svetikov.mymood.R
 import com.svetikov.mymood.notification.NotificationActionReceiver
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 var ID_NOTIFICATION = 0
+val startTime = LocalDateTime
+    .now()
+    .atZone(ZoneId.systemDefault())
+    .toInstant()
+    .toEpochMilli()
+
 class NotificationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams) {
 
+
     override suspend fun doWork(): Result {
-        Log.d("Worker", "Executing periodic notification task.")
+        Log.d(
+            "Worker", "Executing periodic notification task. ${
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yy//HH:mm:ss"))
+            }"
+        )
+        val finishTime = LocalDateTime
+            .now()
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+        Log.d(
+            "Worker",
+            """
+                startTime = $startTime " 
+               "finishTime = $finishTime " 
+               "dif_ms=${
+                (finishTime - startTime)
+            } ms" 
+               "dif_m=${
+                /*  Duration.between(startTime,finishTime)*/
+                (finishTime - startTime) / 1000 / 60
+            } m"""
+        )
         showNotification()
         return Result.success()
     }
@@ -140,18 +172,11 @@ class NotificationWorker @AssistedInject constructor(
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(android.R.drawable.ic_menu_myplaces) //todo need to change
-            /* .setContentTitle("Your two hours message")
-             .setContentText("Please check your way")*/
+
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             //
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(customView)
-            //
-            /* .addAction(android.R.drawable.btn_star_big_on, "😀", pendingIntentA)
-             .addAction(android.R.drawable.btn_star_big_on, "😢", pendingIntentB)
-             .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)
-             .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)
-             .addAction(android.R.drawable.btn_star_big_on, "😡", pendingIntentC)*/
 
 
             .setAutoCancel(true)

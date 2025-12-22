@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,21 +10,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your two hours message"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/notification_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please check your way"/>
+        android:text="Please check your way" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/notif_action_emoji_spacing"
         android:gravity="center"
-        android:layout_marginTop="@dimen/notif_action_emoji_spacing">
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/action_button_1"
             android:layout_width="@dimen/notif_action_button_size"
@@ -36,102 +36,117 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:text="😀"
+            android:text="🤩"
             android:textSize="@dimen/notif_action_emoji_size"
-            android:tooltipText="@string/happy" />
+            android:tooltipText="EXCITED" />
+
         <TextView
             android:id="@+id/action_button_2"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="😢"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/cray"/>
+            android:gravity="center"
+            android:text="😊"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/happy1" />
+
         <TextView
             android:id="@+id/action_button_3"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="😡"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/angry"/>
+            android:gravity="center"
+            android:text="🙂"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/neutral" />
+
         <TextView
             android:id="@+id/action_button_4"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="😴"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/sleep"/>
+            android:gravity="center"
+            android:text="🥱"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/tired" />
 
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/notif_action_emoji_spacing"
         android:gravity="center"
-        android:layout_marginTop="@dimen/notif_action_emoji_spacing">
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/action_button_5"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="😵"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/wow"/>
+            android:gravity="center"
+            android:text="😥"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/sad" />
+
         <TextView
             android:id="@+id/action_button_6"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="🥰"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/love"/>
+            android:gravity="center"
+            android:text="😠"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/angry1" />
+
         <TextView
             android:id="@+id/action_button_7"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="😐"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/indifference"/>
+            android:gravity="center"
+            android:text="😨"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/anxious" />
+
         <TextView
             android:id="@+id/action_button_8"
             android:layout_width="@dimen/notif_action_button_size"
             android:layout_height="@dimen/notif_action_button_size"
-            android:text="😒"
-            android:gravity="center"
-            android:textSize="@dimen/notif_action_emoji_size"  android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="@dimen/notif_action_emoji_spacing"
             android:layout_marginEnd="@dimen/notif_action_emoji_spacing"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tooltipText="@string/unamused"/>
+            android:gravity="center"
+            android:text="🥰"
+            android:textSize="@dimen/notif_action_emoji_size"
+            android:tooltipText="@string/loved" />
 
 
     </LinearLayout>

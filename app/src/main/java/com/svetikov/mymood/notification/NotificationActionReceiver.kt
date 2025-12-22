@@ -35,14 +35,14 @@ class NotificationActionReceiver : BroadcastReceiver() {
         Log.d("Receiver", "Action receiver $action")
 
         val actionType = when (action) {
-            "ACTION_A_CLICKED" -> EmojiFace.HAPPY.face//"😀"
-            "ACTION_B_CLICKED" -> EmojiFace.CRAY.face//"😢"
-            "ACTION_C_CLICKED" -> EmojiFace.ANGRY.face//"😡"
-            "ACTION_D_CLICKED" -> EmojiFace.SLEEP.face//"\uD83D\uDE34"//😴
-            "ACTION_E_CLICKED" -> EmojiFace.WOW.face//"\uD83D\uDE35"//😵
-            "ACTION_F_CLICKED" -> EmojiFace.LOVE.face//"\uD83E\uDD70"//🥰
-            "ACTION_G_CLICKED" -> EmojiFace.INDIFFERENCE.face//"\uD83D\uDE10"//😐
-            "ACTION_V_CLICKED" -> EmojiFace.UNAMUSED.face//"\uD83D\uDE12"//😒
+            "ACTION_A_CLICKED" -> EmojiFace.EXCITED.face//"\uD83E\uDD29"
+            "ACTION_B_CLICKED" -> EmojiFace.HAPPY.face//"😢"
+            "ACTION_C_CLICKED" -> EmojiFace.NEUTRAL.face//"😡"
+            "ACTION_D_CLICKED" -> EmojiFace.TIRED.face//"\uD83D\uDE34"//😴
+            "ACTION_E_CLICKED" -> EmojiFace.SAD.face//"\uD83D\uDE35"//😵
+            "ACTION_F_CLICKED" -> EmojiFace.ANGRY.face//"\uD83E\uDD70"//🥰
+            "ACTION_G_CLICKED" -> EmojiFace.ANXIOUS.face//"\uD83D\uDE10"//😐
+            "ACTION_V_CLICKED" -> EmojiFace.LOVED.face//"\uD83D\uDE12"//😒
             else -> "Unknow way"
         }
 

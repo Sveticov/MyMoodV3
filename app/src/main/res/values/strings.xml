@@ -8,4 +8,11 @@
     <string name="love">LOVE</string>
     <string name="indifference">INDIFFERENCE</string>
     <string name="unamused">UNAMUSED</string>
+    <string name="loved">LOVED</string>
+    <string name="anxious">ANXIOUS</string>
+    <string name="angry1">ANGRY</string>
+    <string name="sad">SAD</string>
+    <string name="tired">TIRED</string>
+    <string name="neutral">NEUTRAL</string>
+    <string name="happy1">HAPPY</string>
 </resources>

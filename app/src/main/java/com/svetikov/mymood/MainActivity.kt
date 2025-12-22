@@ -23,28 +23,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.svetikov.mymood.ui.pages.ActionLogScreen
 import com.svetikov.mymood.ui.theme.MyMoodTheme
 import com.svetikov.mymood.viewmodel.ActionViewModel
 import com.svetikov.mymood.worker.NotificationWorker
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
+    private val startTime =
+        LocalDateTime
+            .now()
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
     private val viewModel: ActionViewModel by viewModels<ActionViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("onCreate", "onCreate")
         //schedule
         window.decorView.post {
-            schedulePeriodicNotification(this, hors = viewModel.notificationIntervalHours.value)
+            // schedulePeriodicNotification(this, hours = viewModel.notificationIntervalHours.value)
+            viewModel.initializePeriodicWork()
             scheduleOne(this)
         }
 
@@ -67,20 +72,25 @@ class MainActivity : ComponentActivity() {
 
 
     //--------------------------work manager------------------------------
-    private fun schedulePeriodicNotification(context: Context,hors:Int=1) {
+  /*  private fun schedulePeriodicNotification(context: Context, hours: Int = 1) {
+        val interval = hours.toLong()
+        val workerName = "${interval}_hour_notification"
+        val wm = WorkManager.getInstance(context)
+        wm.cancelUniqueWork(workerName)
+
         val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            repeatInterval = (hors*60L),
-            repeatIntervalTimeUnit = TimeUnit.MINUTES
+            repeatInterval = interval,
+            repeatIntervalTimeUnit = TimeUnit.HOURS
         ).build()
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "TwoHourNotification",
-            ExistingPeriodicWorkPolicy.KEEP,
+        wm.enqueueUniquePeriodicWork(
+            uniqueWorkName = workerName,
+            ExistingPeriodicWorkPolicy.REPLACE,
             workRequest
         )
         Log.d("workRequest", "workRequest ${workRequest.id}")
-        Log.d("workRequest", "workRequest ${workRequest.workSpec.scheduleRequestedAt}")
-    }
+
+    }*/
 
     private fun scheduleOne(context: Context) {
         Log.d("Start", "START ONE Message")
@@ -94,9 +104,7 @@ class MainActivity : ComponentActivity() {
     private fun isFirstAppLaunch(): Boolean {
         val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
         val first = prefs.getBoolean("firstLaunch", true)
-        /*   if (first) {
-               prefs.edit().putBoolean("firstLaunch", false).apply()
-           }*/
+
         Log.d("launch 2", "${first}")
         return first
     }

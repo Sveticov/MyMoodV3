@@ -5,16 +5,21 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.svetikov.mymood.data.dao.ActionDao
 import com.svetikov.mymood.data.model.ActionLog
 import com.svetikov.mymood.data.model.EmojiFace
 import com.svetikov.mymood.data.model.MoodSegment
 import com.svetikov.mymood.datastore.SettingDataStoreManager
 import com.svetikov.mymood.notification.ActionDaoEntryPoint
+import com.svetikov.mymood.worker.NotificationWorker
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -27,13 +32,16 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class ActionViewModel @Inject constructor(
     private val dao: ActionDao,
     @ApplicationContext private val context: Context,
-    private val dataStoreManager: SettingDataStoreManager
+    private val dataStoreManager: SettingDataStoreManager,
+    /*  private val workerManager: WorkManager*/
 ) : ViewModel() {
 
     val entryPoint = EntryPointAccessors.fromApplication(
@@ -82,8 +90,7 @@ class ActionViewModel @Inject constructor(
                 Log.i("_listMoodSegment.value", "${_listMoodSegment.value}")
                 _emojiWin.value = _listMoodSegment.value.reversed().map { it.label }.firstOrNull()
                     ?: "\uD83D\uDE00"
-            }
-            else{
+            } else {
                 minDate.value = null
                 maxDate.value = null
             }
@@ -109,13 +116,13 @@ class ActionViewModel @Inject constructor(
         targetDate: String = "2025-11-14"
     ): List<MoodSegment> {
 
-           val listSortByTime = list.filter {
-                sortedTime(timestamp = it.timestamp, targetDateStr = targetDate)
+        val listSortByTime = list.filter {
+            sortedTime(timestamp = it.timestamp, targetDateStr = targetDate)
+        }
+            .groupBy { it.actionType }
+            .map {
+                Pair(it.key, it.value.count())
             }
-                .groupBy { it.actionType }
-                .map {
-                    Pair(it.key, it.value.count())
-                }
 
         if (listSortByTime.isNotEmpty()) {
             val sumEmoji = listSortByTime
@@ -127,15 +134,19 @@ class ActionViewModel @Inject constructor(
             }
                 .map {
                     val color = when (it.first) {
-                        EmojiFace.HAPPY.face -> Color(0xFFAEFA06)             //"😀"
-                        EmojiFace.CRAY.face -> Color(0xff90CAF9)              //"😢"
-                        EmojiFace.ANGRY.face -> Color(0xFFEF2A2A)             //"😡"
-                        EmojiFace.SLEEP.face -> Color(0xFF534AF1)             //😴
-                        EmojiFace.WOW.face -> Color(0xFFFFF59D)               //😵
-                        EmojiFace.LOVE.face -> Color(0xFFEF5E8F)              //🥰
-                        EmojiFace.INDIFFERENCE.face -> Color(0xFF0B9CEC)      //😐
-                        EmojiFace.UNAMUSED.face -> Color(0xFFB39DDB)          //😒
-                        else -> Color.DarkGray
+                        EmojiFace.EXCITED.face -> Color(0xFFF89205)   //        //"😀"
+                        EmojiFace.HAPPY.face -> Color(0xFFEEC80C)          //"😢"
+                        EmojiFace.NEUTRAL.face -> Color(0xFF139BEC)           //"😡"
+                        EmojiFace.TIRED.face -> Color(0xFF7986CB)           //😴
+                        EmojiFace.SAD.face -> Color(0xFF4FC3F7)             //😵
+                        EmojiFace.ANGRY.face -> Color(0xFFF55050)            //🥰
+                        EmojiFace.ANXIOUS.face -> Color(0xFFA9E85E)    //😐
+                        EmojiFace.LOVED.face -> Color(0xFFF3467C)        //😒
+                        else -> Color(
+                            red = Random.nextInt(200, 256),
+                            green = Random.nextInt(50, 150),
+                            blue = Random.nextInt(100, 180)
+                        )
                     }
                     MoodSegment((it.second / 100.0).toFloat(), color, it.first)
                 }.sortedBy { it.percentage }
@@ -157,7 +168,7 @@ class ActionViewModel @Inject constructor(
 
     fun getDate(format: String?) {
         _dateGet.value = format ?: "2025-11-17"
-        Log.d("_time", "${_dateGet.value}")
+        Log.d("_time", _dateGet.value)
         viewModelScope.launch(Dispatchers.IO) {
             takeListMoodSelectAndEmojiWin()
         }
@@ -166,14 +177,14 @@ class ActionViewModel @Inject constructor(
 
     fun descriptionEmoji(label: String): String {
         return when (label) {
-            EmojiFace.HAPPY.face -> EmojiFace.HAPPY.name                  //"😀"
-            EmojiFace.CRAY.face -> EmojiFace.CRAY.name                    //"😢"
-            EmojiFace.ANGRY.face -> EmojiFace.ANGRY.name                  //"😡"
-            EmojiFace.SLEEP.face -> EmojiFace.SLEEP.name                  //😴
-            EmojiFace.WOW.face -> EmojiFace.WOW.name                      //😵
-            EmojiFace.LOVE.face -> EmojiFace.LOVE.name                    //🥰
-            EmojiFace.INDIFFERENCE.face -> EmojiFace.INDIFFERENCE.name    //😐
-            EmojiFace.UNAMUSED.face -> EmojiFace.UNAMUSED.name            //😒
+            EmojiFace.EXCITED.face -> EmojiFace.EXCITED.name                  //"😀"
+            EmojiFace.HAPPY.face -> EmojiFace.HAPPY.name                    //"😢"
+            EmojiFace.NEUTRAL.face -> EmojiFace.NEUTRAL.name                  //"😡"
+            EmojiFace.TIRED.face -> EmojiFace.TIRED.name                  //😴
+            EmojiFace.SAD.face -> EmojiFace.SAD.name                      //😵
+            EmojiFace.ANGRY.face -> EmojiFace.ANGRY.name                    //🥰
+            EmojiFace.ANXIOUS.face -> EmojiFace.ANXIOUS.name    //😐
+            EmojiFace.LOVED.face -> EmojiFace.LOVED.name            //😒
             else -> EmojiFace.HAPPY.name
         }
     }
@@ -186,11 +197,49 @@ class ActionViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 1
         )
+
     //---save new interval-----------------------------------------------------------------
-    fun updateNotificationInterval(hours:Int){
+    fun updateNotificationInterval(hours: Int) {
         viewModelScope.launch {
             dataStoreManager.saveInterval(hours)
+            scheduleNewPeriodicWork(hours)
             Log.d("workRequest", "workRequest ${hours}")
+        }
+    }
+    //--------------------------schedular period work--------------------
+    private fun scheduleNewPeriodicWork(intervalHours: Int) {
+        val intervalMinutes = when (intervalHours) {
+            1 -> 60L
+            2 -> 120L
+            3 -> 180L
+            4 -> 240L
+            5 -> 300L
+            else -> 15L
+        }
+        val wm = WorkManager.getInstance(context)
+        val workerName = "TwoHourNotification"
+        wm.cancelUniqueWork(workerName)
+
+        val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
+            repeatInterval = intervalMinutes,
+            repeatIntervalTimeUnit = TimeUnit.MINUTES
+        ).build()
+
+        wm.enqueueUniquePeriodicWork(
+            uniqueWorkName = workerName,
+            ExistingPeriodicWorkPolicy.UPDATE,
+            workRequest
+        )
+        Log.d("workRequest", "workRequest ${workRequest.id}")
+
+    }
+
+    fun initializePeriodicWork() {
+        viewModelScope.launch {
+            notificationIntervalHours.collect { hours ->
+                scheduleNewPeriodicWork(hours)
+                cancel()
+            }
         }
     }
 
